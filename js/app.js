@@ -13,11 +13,11 @@
   ];
 
   const CATEGORY_META = {
-    memory:    { label: 'Memory', exercises: ['memory_sequence', 'spatial_memory', 'digit_span', 'matching_pairs'] },
-    attention: { label: 'Attention', exercises: ['stroop', 'visual_search', 'sustained'] },
-    motor:     { label: 'Reaction', exercises: ['reaction', 'target_tracking'] },
+    memory:    { label: 'Memory', exercises: ['memory_sequence', 'spatial_memory', 'digit_span', 'matching_pairs', 'word_recall'] },
+    attention: { label: 'Attention', exercises: ['stroop', 'visual_search', 'sustained', 'change_detection', 'divided_attention'] },
+    motor:     { label: 'Reaction', exercises: ['reaction', 'target_tracking', 'sequence_tapping', 'aim_trainer', 'rhythm_tap'] },
     reasoning: { label: 'Critical Thinking', exercises: ['logic_patterns', 'deduction', 'assumption', 'fact_opinion', 'probability', 'analogies', 'odd_one_out', 'cognitive_bias', 'causal_reasoning', 'conditional_logic'] },
-    french:    { label: 'French', exercises: ['french_grammar', 'french_fillblank', 'french_ordering', 'french_listening'] }
+    french:    { label: 'French', exercises: ['french_grammar', 'french_fillblank', 'french_ordering', 'french_listening', 'verb_conjugation'] }
   };
 
   function fmtDate(d) {
@@ -561,21 +561,16 @@
 
   // ============================= THEME / MOTION =============================
   function applyTheme() {
-    let theme = 'light';
-    try {
-      theme = Storage.getSettings().theme;
-      if (theme === 'system') {
-        theme = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
-      }
-    } catch (e) {
-      theme = 'light';
+    const settings = Storage.getSettings();
+    let theme = settings.theme;
+    if (theme === 'system') {
+      theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     }
     document.documentElement.setAttribute('data-theme', theme);
   }
   function applyReducedMotion() {
-    let reduced = false;
-    try { reduced = !!Storage.getSettings().reducedMotion; } catch (e) { reduced = false; }
-    document.body.classList.toggle('reduced-motion', reduced);
+    const settings = Storage.getSettings();
+    document.body.classList.toggle('reduced-motion', !!settings.reducedMotion);
   }
 
   // ============================= NAV / INIT =============================
@@ -606,22 +601,12 @@
   function init() {
     applyTheme();
     applyReducedMotion();
-
-    // Watch for OS dark-mode changes. Older iOS Safari (<14) has no
-    // addEventListener on MediaQueryList, so fall back to addListener and
-    // never let this stop the app from rendering.
-    try {
-      if (window.matchMedia) {
-        const mq = window.matchMedia('(prefers-color-scheme: dark)');
-        const onChange = () => { if (Storage.getSettings().theme === 'system') applyTheme(); };
-        if (typeof mq.addEventListener === 'function') mq.addEventListener('change', onChange);
-        else if (typeof mq.addListener === 'function') mq.addListener(onChange);
-      }
-    } catch (e) {
-      console.warn('Colour-scheme listener unavailable', e);
+    if (window.matchMedia) {
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+        if (Storage.getSettings().theme === 'system') applyTheme();
+      });
     }
-
-    try { Flashcards.seedIfEmpty(); } catch (e) { console.warn('Flashcard seed failed', e); }
+    Flashcards.seedIfEmpty();
     buildNav();
 
     Router.register('home', renderHome);
@@ -634,28 +619,5 @@
     Router.start();
   }
 
-  function bootstrap() {
-    try {
-      init();
-    } catch (e) {
-      // Never leave the user staring at a blank screen.
-      console.error('Startup failed', e);
-      const root = document.getElementById('view-root') || document.body;
-      root.innerHTML = `
-        <div class="card" style="margin:20px;">
-          <h2>Something went wrong starting the app</h2>
-          <p class="page-sub">Your saved data may be corrupted, or this browser may be missing a feature.</p>
-          <pre style="white-space:pre-wrap;font-size:0.75rem;opacity:0.7;">${String(e && e.message ? e.message : e)}</pre>
-          <button class="btn btn-danger btn-block" id="emergency-reset" style="margin-top:12px;">Reset app data and reload</button>
-        </div>`;
-      const btn = document.getElementById('emergency-reset');
-      if (btn) btn.addEventListener('click', () => { try { Storage.resetAll(); } catch (_) {} location.reload(); });
-    }
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', bootstrap);
-  } else {
-    bootstrap(); // script loaded after DOM was already parsed
-  }
+  document.addEventListener('DOMContentLoaded', init);
 })();

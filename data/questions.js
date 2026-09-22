@@ -275,7 +275,7 @@ const ProbabilityScenarios = [
   }
 ];
 
-// ---- 6. NEW — Analogies: {id, prompt, options[], correctIndex, explanation} ----
+// ---- 6. Analogies: {id, prompt, options[], correctIndex, explanation} ----
 const AnalogyQuestions = [
   {
     id: 'an1', prompt: 'Bird is to nest as bee is to ___',
@@ -329,7 +329,7 @@ const AnalogyQuestions = [
   }
 ];
 
-// ---- 7. NEW — Odd One Out: {id, items[], correctIndex, explanation} ------------
+// ---- 7. Odd One Out: {id, items[], correctIndex, explanation} ------------
 const OddOneOutQuestions = [
   { id: 'oo1', items: ['Violin', 'Cello', 'Trumpet', 'Viola'], correctIndex: 2, explanation: 'The others are string instruments; a trumpet is brass.' },
   { id: 'oo2', items: ['Square', 'Triangle', 'Rectangle', 'Rhombus'], correctIndex: 1, explanation: 'The others all have four sides; a triangle has three.' },
@@ -343,7 +343,7 @@ const OddOneOutQuestions = [
   { id: 'oo10', items: ['Mercury', 'Venus', 'Europa', 'Mars'], correctIndex: 2, explanation: 'The others are planets; Europa is a moon of Jupiter.' }
 ];
 
-// ---- 8. NEW — Cognitive Biases: {id, scenario, options[], correctIndex, explanation}
+// ---- 8. Cognitive Biases: {id, scenario, options[], correctIndex, explanation}
 const CognitiveBiasQuestions = [
   {
     id: 'cb1',
@@ -403,7 +403,7 @@ const CognitiveBiasQuestions = [
   }
 ];
 
-// ---- 9. NEW — Causal Reasoning: {id, scenario, question, options[], correctIndex, explanation}
+// ---- 9. Causal Reasoning: {id, scenario, question, options[], correctIndex, explanation}
 const CausalReasoningQuestions = [
   {
     id: 'cr1',
@@ -455,7 +455,7 @@ const CausalReasoningQuestions = [
   }
 ];
 
-// ---- 10. NEW — Conditional Logic: {id, rule, question, options[], correctIndex, explanation}
+// ---- 10. Conditional Logic: {id, rule, question, options[], correctIndex, explanation}
 const ConditionalLogicQuestions = [
   {
     id: 'cl1',
